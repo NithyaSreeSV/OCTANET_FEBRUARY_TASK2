@@ -23,6 +23,7 @@
     <div class="container">
         <div class="box"> 
             <input type="text" placeholder="Write Here...." id="inputBox" required>
+            <input type="date" id="dueDate" required>
             <select id="prioritySelect" required>
                 <option class="option" value="" disabled selected>Choose Priority...</option>
                 <option class="option" value="High">High</option>
@@ -44,69 +45,91 @@
         document.body.classList.add("dark");
 
         let inputBox = document.querySelector('#inputBox');
-        let prioritySelect = document.querySelector('#prioritySelect');
-        let list = document.querySelector('#list');
+let prioritySelect = document.querySelector('#prioritySelect');
+let dueDate = document.querySelector('#dueDate');
+let list = document.querySelector('#list');
 
-        inputBox.addEventListener("keyup", function(event){
-            if(event.key == "Enter"){
-                addItem();
-                this.value = "";
-            }
-        });
+inputBox.addEventListener("keyup", function(event){
+    if(event.key == "Enter"){
+        addItem();
+        this.value = "";
+    }
+});
 
-        let addItem = () => {
-            if (prioritySelect.value === "") {
-                alert("Please choose a priority for the task.");
-                return;
-            }
-            let priority = prioritySelect.value;
-            let taskText = inputBox.value;
-            let listItem = document.createElement("li");
-            listItem.innerHTML = `${taskText} - Priority: ${priority} <i></i>`;
-            listItem.setAttribute("data-priority", priority.toLowerCase());
-            listItem.addEventListener("click", function(){
-                this.classList.toggle('done');
-            });
-            listItem.querySelector("i").addEventListener("click", function(){
-                listItem.remove();
-            });
+let addItem = () => {
+    if (prioritySelect.value === "" || dueDate.value === "") {
+        alert("Please choose a priority and set a due date for the task.");
+        return;
+    }
+    let priority = prioritySelect.value;
+    let taskText = inputBox.value;
+    let due = dueDate.value;
+    let listItem = document.createElement("li");
+    listItem.innerHTML = `${taskText} - Priority: ${priority} - Due: ${due} <i></i>`;
+    listItem.setAttribute("data-priority", priority.toLowerCase());
+    listItem.setAttribute("data-due", due); // Store due date as an attribute
+    listItem.addEventListener("click", function(){
+        this.classList.toggle('done');
+    });
+    listItem.querySelector("i").addEventListener("click", function(){
+        listItem.remove();
+    });
 
-            // Append the task based on its priority
-            if (priority === 'High') {
-                list.insertBefore(listItem, list.firstChild);
-            } else if (priority === 'Medium') {
-                let highPriorityTasks = document.querySelectorAll('[data-priority="high"]');
-                if (highPriorityTasks.length > 0) {
-                    list.insertBefore(listItem, highPriorityTasks[highPriorityTasks.length - 1].nextSibling);
-                } else {
-                    list.appendChild(listItem);
-                }
-            } else {
-                // Low priority tasks
-                list.appendChild(listItem);
-            }
-        };
+    let tasks = Array.from(list.children); // Convert NodeList to array for sorting
 
-        const checkbox = document.getElementById("checkbox");
-        checkbox.addEventListener("change", () => {
-            document.body.classList.toggle("dark");
-        });
-
-        function filterTasks(priority) {
-            const tasks = document.querySelectorAll('#list li');
-            tasks.forEach(task => {
-                const taskPriority = task.getAttribute('data-priority');
-                if (priority === 'all') {
-                    task.style.display = 'flex';
-                } else {
-                    if (taskPriority === priority.toLowerCase()) {
-                        task.style.display = 'flex';
-                    } else {
-                        task.style.display = 'none';
-                    }
-                }
-            });
+    // Sort tasks by priority and then by due date
+    tasks.push(listItem);
+    tasks.sort((a, b) => {
+        let priorityCompare = priorityToNumber(a.getAttribute('data-priority')) - priorityToNumber(b.getAttribute('data-priority'));
+        if (priorityCompare === 0) {
+            return new Date(a.getAttribute('data-due')) - new Date(b.getAttribute('data-due'));
         }
+        return priorityCompare;
+    });
+
+    // Clear the list and re-append sorted tasks
+    list.innerHTML = '';
+    tasks.forEach(task => {
+        list.appendChild(task);
+    });
+};
+
+// Helper function to convert priority string to a number for sorting
+function priorityToNumber(priority) {
+    switch (priority) {
+        case 'high':
+            return 1;
+        case 'medium':
+            return 2;
+        case 'low':
+            return 3;
+        default:
+            return 0;
+    }
+}
+
+const checkbox = document.getElementById("checkbox");
+checkbox.addEventListener("change", () => {
+    document.body.classList.toggle("dark");
+});
+
+function filterTasks(priority) {
+    const tasks = document.querySelectorAll('#list li');
+    tasks.forEach(task => {
+        const taskPriority = task.getAttribute('data-priority');
+        if (priority === 'all') {
+            task.style.display = 'flex';
+        } else {
+            if (taskPriority === priority.toLowerCase()) {
+                task.style.display = 'flex';
+            } else {
+                task.style.display = 'none';
+            }
+        }
+    });
+}
+
+
     </script>
 </body>
 </html>
