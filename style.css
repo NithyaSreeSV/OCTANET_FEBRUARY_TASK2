@@ -116,7 +116,7 @@ h1{
 }
 .box li{
     position: relative;
-    width: calc(100% - 40px);
+    width: calc(100% - 35px);
     display: flex;
     align-items: center;
     background: #e31068;
@@ -185,7 +185,7 @@ h1{
 #list{
     position: relative;
     margin-top: 20px;
-    height: 350px;
+    height: 250px;
     overflow-y: auto;
     padding-right: 10px;
 }
@@ -214,4 +214,35 @@ h1{
                 inset 5px 5px 10px rgba(0, 0, 0, 0.5),
                 inset 5px 5px 20px rgba(255, 255, 255, 0.2),
                 inset -5px -5px 15px rgba(0, 0, 0, 0.75);
+}
+/* Additions for priority select element */
+#prioritySelect {
+    position: relative;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 15px 20px;
+    padding-right: 20px;
+    border-radius: 30px;
+    font-size: 1em;
+    box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.25), 
+    inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+    inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+    margin-top: 20px;
+}
+/* Styling for task filtering buttons */
+.filter-buttons {
+    position: relative;
+    align-items: center;
+    width: 23%;
+    border: none;
+    outline: none;
+    padding: 15px 20px;
+    padding-right: 20px;
+    border-radius: 30px;
+    font-size: 1em;
+    box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.25), 
+    inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+    inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+    margin-top: 20px;
 }
